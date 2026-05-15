@@ -1,7 +1,3 @@
----
-
-#README — Repo Config (`mlops-gitops-config`)
-
 # MLOps GitOps Configuration Repository
 
 This repository contains the declarative deployment configuration for the TFM project:
