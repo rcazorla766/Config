@@ -25,4 +25,4 @@ labels:
 images:
   - name: ai-house-predictor
     newName: ghcr.io/rcazorla766/ai-house-predictor
-    newTag: "1.0.0"
+    newTag: b364040

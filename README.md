@@ -23,7 +23,7 @@ Config/
 
 ---
 
-## GitOps con Argo CD
+## GitOps con Argo CD (Sprint 3)
 
 El despliegue productivo está **gobernado por Git**. No se usa `kubectl apply -k` para la aplicación.
 
@@ -39,14 +39,6 @@ El despliegue productivo está **gobernado por Git**. No se usa `kubectl apply -
 | Auto-sync | `prune: true`, `selfHeal: true` |
 
 ### Acceso a Argo CD UI
-
-```bash
-kubectl -n argocd port-forward svc/argocd-server 8443:443
-```
-
-Abrir: **https://localhost:8443**
-
-Credenciales iniciales:
 
 ```bash
 kubectl -n argocd get secret argocd-initial-admin-secret \
