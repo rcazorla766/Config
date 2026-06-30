@@ -6,74 +6,75 @@ Repositorio de configuración declarativa para el despliegue del TFM:
 
 ---
 
-## Estructura (Sprint 2)
+## Estructura
 
 ```
 Config/
-├── base/
-│   ├── namespace.yaml
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   ├── configmap.yaml
-│   ├── secret.example.yaml
-│   └── kustomization.yaml
-└── overlays/
-    ├── dev/
-    └── prod/
+├── base/                  # Manifiestos Kustomize base
+├── overlays/
+│   ├── dev/
+│   └── prod/              # Entorno productivo (gobernado por Argo CD)
+├── argocd/
+│   ├── application.yaml   # Application de Argo CD
+│   └── project.yaml       # AppProject (opcional)
+├── SPRINT2_REPORT.md
+└── SPRINT3_REPORT.md
 ```
 
 ---
 
-## Despliegue rápido
+## GitOps con Argo CD (Sprint 3)
 
-### Base (2 réplicas)
+El despliegue productivo está **gobernado por Git**. No se usa `kubectl apply -k` para la aplicación.
+
+### Application
+
+| Campo | Valor |
+|---|---|
+| Nombre | `ai-house-predictor-prod` |
+| Repositorio | `https://github.com/rcazorla766/Config.git` |
+| Path | `overlays/prod` |
+| Branch | `main` |
+| Namespace destino | `mlops-house-predictor-prod` |
+| Auto-sync | `prune: true`, `selfHeal: true` |
+
+### Acceso a Argo CD UI
 
 ```bash
-# Construir imagen local
-cd ../App
-docker build -t ai-house-predictor:1.0.0 .
-
-# Desplegar manifiestos
-kubectl apply -k ../Config/base
-
-# Verificar
-kubectl -n mlops-house-predictor get pods,deploy,svc
-kubectl -n mlops-house-predictor rollout status deployment/ai-house-predictor
+kubectl -n argocd port-forward svc/argocd-server 8443:443
 ```
 
-### Entorno dev (1 réplica)
+Abrir: **https://localhost:8443**
+
+Credenciales iniciales:
 
 ```bash
-kubectl apply -k overlays/dev
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 -d
+# Usuario: admin
 ```
 
-### Entorno prod (2 réplicas, más recursos)
+### Bootstrap (solo una vez)
 
 ```bash
-kubectl apply -k overlays/prod
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl apply -f argocd/application.yaml
 ```
 
 ---
 
-## Secret de ejemplo
+## Flujo GitOps
 
-El archivo `base/secret.example.yaml` es una **plantilla**. No se aplica en el despliegue base.
-
-```bash
-cp base/secret.example.yaml base/secret.yaml
-# Editar valores y aplicar manualmente en fase GitOps con Sealed Secrets
-```
-
----
-
-## Próxima fase (Sprint 3)
-
-- Argo CD Application apuntando a este repositorio
-- Sincronización automática GitOps
-- Gestión de secretos con Sealed Secrets / External Secrets
+1. Desarrollador modifica manifiestos en `overlays/prod/`.
+2. `git commit` + `git push` a `main`.
+3. Argo CD detecta el cambio en Git.
+4. Sincroniza automáticamente el clúster.
+5. Kubernetes aplica RollingUpdate.
 
 ---
 
 ## Documentación
 
-- Informe Sprint 2: [`SPRINT2_REPORT.md`](SPRINT2_REPORT.md)
+- Sprint 2 (Kubernetes): [`SPRINT2_REPORT.md`](SPRINT2_REPORT.md)
+- Sprint 3 (GitOps): [`SPRINT3_REPORT.md`](SPRINT3_REPORT.md)
