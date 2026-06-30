@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: mlops-house-predictor
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
+
+labels:
+  - pairs:
+      app.kubernetes.io/managed-by: kustomize
+      app.kubernetes.io/part-of: mlops-tfm
+    includeSelectors: false
+
+images:
+  - name: ai-house-predictor
+    newName: ai-house-predictor
+    newTag: "1.0.0"

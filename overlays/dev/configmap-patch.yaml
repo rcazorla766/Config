@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-house-predictor-config
+data:
+  ENVIRONMENT: "dev"
+  LOG_LEVEL: "debug"

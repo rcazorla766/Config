@@ -1,76 +1,79 @@
 # MLOps GitOps Configuration Repository
 
-This repository contains the declarative deployment configuration for the TFM project:
+Repositorio de configuración declarativa para el despliegue del TFM:
 
 **"Uso de GitOps para la Gobernanza de Modelos de IA en Producción (MLOps + DevOps)"**
 
-The repository is designed following GitOps principles, using Git as the single source of truth for system state management.
+---
+
+## Estructura (Sprint 2)
+
+```
+Config/
+├── base/
+│   ├── namespace.yaml
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   ├── configmap.yaml
+│   ├── secret.example.yaml
+│   └── kustomization.yaml
+└── overlays/
+    ├── dev/
+    └── prod/
+```
 
 ---
 
-# Objectives
+## Despliegue rápido
 
-This repository is responsible for:
+### Base (2 réplicas)
 
-- Kubernetes manifests
-- Deployment configuration
-- Environment definitions
-- Infrastructure declarative state
-- GitOps synchronization
+```bash
+# Construir imagen local
+cd ../App
+docker build -t ai-house-predictor:1.0.0 .
 
----
+# Desplegar manifiestos
+kubectl apply -k ../Config/base
 
-# Planned Technologies
+# Verificar
+kubectl -n mlops-house-predictor get pods,deploy,svc
+kubectl -n mlops-house-predictor rollout status deployment/ai-house-predictor
+```
 
-The following technologies are planned to be used during development:
+### Entorno dev (1 réplica)
 
-- Kubernetes
-- ArgoCD
-- YAML manifests
-- GitHub
-- Infrastructure as Code (IaC)
+```bash
+kubectl apply -k overlays/dev
+```
 
----
+### Entorno prod (2 réplicas, más recursos)
 
-# Repository Structure
-
-.
-├── deployments/          # Kubernetes Deployments
-├── services/             # Kubernetes Services
-├── environments/         # Environment-specific configuration
-├── argocd/               # ArgoCD application definitions
-└── README.md
+```bash
+kubectl apply -k overlays/prod
+```
 
 ---
 
-# GitOps Workflow
+## Secret de ejemplo
 
-The GitOps workflow is based on the following principles:
+El archivo `base/secret.example.yaml` es una **plantilla**. No se aplica en el despliegue base.
 
-·Git as the single source of truth
-·Declarative infrastructure and deployment definitions
-·Automated reconciliation between desired and actual state
-·Version-controlled deployments
-·Full traceability of configuration changes
+```bash
+cp base/secret.example.yaml base/secret.yaml
+# Editar valores y aplicar manualmente en fase GitOps con Sealed Secrets
+```
 
-Deployment synchronization will be managed through ArgoCD.
+---
 
-# Integration with Application Repository
+## Próxima fase (Sprint 3)
 
-This repository works together with the application repository:
+- Argo CD Application apuntando a este repositorio
+- Sincronización automática GitOps
+- Gestión de secretos con Sealed Secrets / External Secrets
 
-mlops-gitops-app
+---
 
-The CI pipeline from the application repository will update deployment manifests stored in this repository, enabling automated deployments through GitOps workflows.
+## Documentación
 
-# Status
-
-Project currently under development as part of the Master's Thesis (TFM).
-
-# Authors
-
-Master's Degree in Development and Operations (DevOps)
-Universidad Internacional de La Rioja (UNIR)
-
-Rubén Cazorla Rodríguez
-Cristhian Alexander Cano Correa
+- Informe Sprint 2: [`SPRINT2_REPORT.md`](SPRINT2_REPORT.md)

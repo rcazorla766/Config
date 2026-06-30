@@ -1,0 +1,4 @@
+# Temporary cluster validation artifacts (Sprint 2 local testing)
+kubeconfig-k3s.yaml
+*.tar
+ai-house-predictor.tar

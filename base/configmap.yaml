@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ai-house-predictor-config
+  labels:
+    app.kubernetes.io/name: ai-house-predictor
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: mlops-tfm
+data:
+  APP_NAME: "ai-house-predictor"
+  ENVIRONMENT: "base"
+  LOG_LEVEL: "info"
+  HOST: "0.0.0.0"
+  PORT: "8000"
+  MODEL_PATH: "/app/app/models/trained_model_v1.pkl"
+  MODEL_METADATA_PATH: "/app/app/models/model_metadata.json"
