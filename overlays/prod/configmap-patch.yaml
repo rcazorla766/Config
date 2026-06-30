@@ -4,4 +4,4 @@ metadata:
   name: ai-house-predictor-config
 data:
   ENVIRONMENT: "prod"
-  LOG_LEVEL: "warning"
+  LOG_LEVEL: "info"
