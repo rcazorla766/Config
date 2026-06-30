@@ -25,4 +25,4 @@ labels:
 images:
   - name: ai-house-predictor
     newName: ai-house-predictor
-    newTag: "1.0.0"
+    newTag: "1.0.1"
