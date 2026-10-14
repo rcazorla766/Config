@@ -24,4 +24,4 @@ labels:
 images:
 - name: ai-house-predictor
   newName: ghcr.io/rcazorla766/ai-house-predictor
-  newTag: "0394301"
+  newTag: 2448d24
